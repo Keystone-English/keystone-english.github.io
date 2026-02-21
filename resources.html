@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Resources — Keystone English</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <style>
+        .resources-hero {
+            background: var(--dark);
+            padding: 140px 0 80px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .profile-badge {
+            display: inline-block;
+            background: rgba(251, 172, 0, 0.15);
+            color: var(--brand);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+            border: 1px solid rgba(251, 172, 0, 0.3);
+        }
+
+        .resource-section {
+            padding: 80px 0;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-placeholder::before {
+            content: '▶';
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 2px solid #fff;
+        }
+
+        .checklist-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: var(--radius);
+            border: 1px solid #e2e8f0;
+            height: 100%;
+        }
+
+        .checklist-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            align-items: flex-start;
+        }
+
+        .check-icon {
+            color: var(--success);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .locked-content {
+            position: relative;
+            opacity: 0.7;
+            filter: grayscale(1);
+            pointer-events: none;
+        }
+
+        .locked-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.6);
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========== NAVIGATION ========== -->
+    <nav class="nav" id="main-nav">
+        <div class="nav__inner">
+            <a href="index.html" class="nav__logo">
+                <img src="assets/logo.png" alt="Keystone English Logo">
+                <div class="nav__logo-text">
+                    Keystone English
+                    <span>Core Skills for Global Success</span>
+                </div>
+            </a>
+            <ul class="nav__links" id="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="scorecard.html">Executive Scorecard</a></li>
+                <li><a href="resources.html" class="active">Resources</a></li>
+                <li><a href="scorecard.html" class="btn btn--primary btn--sm">Free Assessment →</a></li>
+            </ul>
+            <button class="nav__hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <!-- ========== DYNAMIC HEADER ========== -->
+    <header class="resources-hero">
+        <div class="container">
+            <div id="dynamic-header">
+                <span class="profile-badge">Keystone Resources</span>
+                <h1
+                    style="font-family:'Playfair Display', serif; font-size:clamp(2.5rem, 5vw, 3.5rem); margin-bottom:20px;">
+                    Welcome to Your Growth Plan
+                </h1>
+                <p style="font-size:1.2rem; color:rgba(255,255,255,0.8); max-width:600px; margin:0 auto;">
+                    Strategies and tools to help you communicate with authority.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== RECOMMENDED ACTIONS ========== -->
+    <section class="resource-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="overline">Your Next Steps</span>
+                <h2>Recommended for <span id="profile-name-span">You</span></h2>
+                <p>Based on your scorecard result, focus on these three strategic shifts first.</p>
+            </div>
+
+            <div class="grid grid-3" id="recommendations-grid">
+                <!-- Injected via JS -->
+                <div class="checklist-box">
+                    <h4 style="margin-bottom:16px;">Core Concepts</h4>
+                    <p>Loading your recommendations...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== COURSE PREVIEWS ========== -->
+    <section class="resource-section section--light">
+        <div class="container">
+            <div class="section-header">
+                <span class="overline">Deep Dive</span>
+                <h2>Master the Full System</h2>
+            </div>
+
+            <div class="grid grid-2">
+                <!-- Course 1 -->
+                <div class="card fade-in">
+                    <div class="video-placeholder"
+                        style="background: linear-gradient(135deg, #2A2F34 0%, #1a1f23 100%);">
+                        <!-- Placeholder for video thumb -->
+                    </div>
+                    <span class="badge badge--accent mb-2">Signature Course</span>
+                    <h3 style="margin-bottom:10px;">The Executive Presence Masterclass</h3>
+                    <p class="mb-3">The complete 6-week program to rebuild your communication architecture. From
+                        structural authority to narrative design.</p>
+                    <a href="https://keystone-english.learnworlds.com/course/executive-presence" target="_blank"
+                        class="btn btn--outline-dark btn--sm">View Course Details →</a>
+                </div>
+
+                <!-- Course 2 -->
+                <div class="card fade-in">
+                    <div class="video-placeholder"
+                        style="background: linear-gradient(135deg, #FFB300 0%, #FF8F00 100%);">
+                        <!-- Placeholder -->
+                    </div>
+                    <span class="badge badge--brand mb-2">Workshop</span>
+                    <h3 style="margin-bottom:10px;">Strategic Storytelling for Leaders</h3>
+                    <p class="mb-3">Learn how to present data without "dumping" data. Turn complex updates into
+                        compelling insights.</p>
+                    <a href="https://keystone-english.learnworlds.com/course/storytelling" target="_blank"
+                        class="btn btn--outline-dark btn--sm">View Workshop →</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ========== CTA ========== -->
+    <section class="cta-banner">
+        <div class="container">
+            <h2>Need Personalized Feedback?</h2>
+            <p>Book a 1-on-1 strategy session to review your scorecard results and build a custom roadmap.</p>
+            <a href="https://keystone-english.learnworlds.com/coaching" target="_blank"
+                class="btn btn--primary btn--lg">Book a Strategy Call</a>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__grid">
+                <div>
+                    <div class="footer__brand">
+                        <img src="assets/logo.png" alt="Keystone English">
+                        <span class="footer__brand-name">Keystone English</span>
+                    </div>
+                    <p class="footer__desc">Proprietary frameworks for global business communication.</p>
+                </div>
+                <div>
+                    <h5 class="footer__heading">Navigate</h5>
+                    <ul class="footer__links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="scorecard.html">Executive Scorecard</a></li>
+                        <li><a href="resources.html">Resources</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="footer__heading">Connect</h5>
+                    <ul class="footer__links">
+                        <li><a href="mailto:info@keystoneenglish.com.au">info@keystoneenglish.com.au</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <span>© 2026 Keystone English. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileKey = window.getURLParam('profile');
+            const headerObj = document.getElementById('dynamic-header');
+            const recGrid = document.getElementById('recommendations-grid');
+            const nameSpan = document.getElementById('profile-name-span');
+
+            const content = {
+                foundation: {
+                    title: "The Technical Expert",
+                    subtitle: "You get things done. Now it's time to get noticed.",
+                    recs: [
+                        {
+                            title: "Stop Over-Explaining",
+                            items: [
+                                "Use the 'Bottom Line Up Front' (BLUF) method.",
+                                "Limit your status updates to 60 seconds.",
+                                "Replace 'How we did it' with 'What we achieved'."
+                            ]
+                        },
+                        {
+                            title: "Build Visibility",
+                            items: [
+                                "Speak in the first 10 minutes of every meeting.",
+                                "Ask one strategic question per call.",
+                                "Turn your camera on, always."
+                            ]
+                        },
+                        {
+                            title: "Action Plan",
+                            items: [
+                                "Download the '60-Second Lead' template.",
+                                "Watch the module on 'Structural Authority'.",
+                                "Practice your intro for the next team meeting."
+                            ]
+                        }
+                    ]
+                },
+                growth: {
+                    title: "The Rising Architect",
+                    subtitle: "You're helpful and polite. Now become powerful and indispensable.",
+                    recs: [
+                        {
+                            title: "Kill the Hedging",
+                            items: [
+                                "Remove 'I think', 'maybe', and 'just' from your vocabulary.",
+                                "Replace 'Is that okay?' with 'What are your thoughts?'.",
+                                "Use the phrase 'My assessment is...'."
+                            ]
+                        },
+                        {
+                            title: "Master the Interrupt",
+                            items: [
+                                "Use the 'Interruption Bridge' technique.",
+                                "Don't stop talking when someone interrupts—finish your sentence.",
+                                "Hold space with silence, dot not rush to fill it."
+                            ]
+                        },
+                        {
+                            title: "Action Plan",
+                            items: [
+                                "Audit your last 5 emails for hedging words.",
+                                "Watch the 'Strategic Silence' lesson.",
+                                "Challenge one point in your next meeting."
+                            ]
+                        }
+                    ]
+                },
+                keystone: {
+                    title: "The Boardroom Strategist",
+                    subtitle: "You have the seat. Now command the table.",
+                    recs: [
+                        {
+                            title: "Narrative Control",
+                            items: [
+                                "Frame every discussion with a 'Strategic Frame'.",
+                                "Focus on risk, opportunity, and trade-offs.",
+                                "Use analogies to simplify complexity for non-experts."
+                            ]
+                        },
+                        {
+                            title: "Executive Friction",
+                            items: [
+                                "Don't agree too quickly—healthy friction builds respect.",
+                                "Ask 'Pivot Questions' that change the conversation's direction.",
+                                "Use 'No' as a complete sentence when necessary."
+                            ]
+                        },
+                        {
+                            title: "Action Plan",
+                            items: [
+                                "Draft your 'Signature Story' for the next town hall.",
+                                "Refine your personal 'Brand Manifesto'.",
+                                "Book a session on 'Advanced Negotiation Dynamics'."
+                            ]
+                        }
+                    ]
+                }
+            };
+
+            // Default to foundation if no key or invalid key
+            const data = content[profileKey] || {
+                title: "Keystone Resources",
+                subtitle: "Select a path to begin your journey to executive fluency.",
+                recs: [
+                    { title: "Start Here", items: ["Take the Scorecard to get your personalized plan.", "Watch the welcome video below.", "Browse our course catalog."] },
+                    { title: "Core Concepts", items: ["Structural Authority", "The Influence Framework", "The Presence Blueprint"] },
+                    { title: "Next Steps", items: ["Book a discovery call.", "Follow us on LinkedIn.", "Join the newsletter."] }
+                ]
+            };
+
+            // Render Header
+            headerObj.innerHTML = `
+                <span class="profile-badge">${profileKey ? 'Your Profile' : 'Welcome'}</span>
+                <h1 style="font-family:'Playfair Display', serif; font-size:clamp(2.5rem, 5vw, 3.5rem); margin-bottom:20px;">
+                    ${data.title}
+                </h1>
+                <p style="font-size:1.2rem; color:rgba(255,255,255,0.8); max-width:600px; margin:0 auto;">
+                    ${data.subtitle}
+                </p>
+            `;
+
+            if (profileKey) {
+                nameSpan.innerText = data.title;
+            }
+
+            // Render Recommendations
+            recGrid.innerHTML = data.recs.map((col, idx) => `
+                <div class="checklist-box fade-in" style="transition-delay: ${idx * 100}ms">
+                    <h4 style="margin-bottom:20px; color:var(--text-main); font-size:1.2rem;">${col.title}</h4>
+                    <div>
+                        ${col.items.map(item => `
+                            <div class="checklist-item">
+                                <span class="check-icon">✓</span>
+                                <p style="font-size:0.95rem; margin:0;">${item}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+        });
+    </script>
+</body>
+
+</html>

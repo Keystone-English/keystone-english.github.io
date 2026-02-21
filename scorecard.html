@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Presence Scorecard — Keystone English</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <style>
+        /* --- SURVEY SPECIFIC STYLES (Adapted) --- */
+        :root {
+            --primary: #FBAC00;
+            --accent: #2196F3;
+            --dark-bg: #2A2F34;
+            --light-bg: #F5F5F5;
+            --text-main: #2A2F34;
+            --text-light: #64748b;
+            --secondary: #2196F3;
+            /* Ensure secondary is defined */
+        }
+
+        .scorecard-page {
+            background: var(--light-bg);
+            padding: 120px 0 80px;
+            /* Account for fixed nav */
+            min-height: 100vh;
+        }
+
+        #ranger-widget {
+            background: #fff;
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .widget-header {
+            background: var(--primary);
+            color: var(--text-main);
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .widget-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 8px;
+        }
+
+        .widget-header p {
+            font-weight: 500;
+            opacity: 0.9;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .progress-container {
+            background: #e2e8f0;
+            width: 100%;
+            height: 8px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .scroll-area {
+            padding: 40px;
+        }
+
+        /* Pillars & Questions */
+        .pillar-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+            text-align: center;
+        }
+
+        .pillar-label {
+            display: block;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .pillar-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--text-main);
+        }
+
+        .question-block {
+            margin-bottom: 40px;
+            border-bottom: 1px solid #f8fafc;
+            padding-bottom: 30px;
+        }
+
+        .question-block:last-child {
+            border-bottom: none;
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 24px;
+            color: var(--text-main);
+        }
+
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fff;
+        }
+
+        .option-label:hover {
+            border-color: var(--accent);
+            background: #f8fafc;
+        }
+
+        .option-label input[type="radio"] {
+            transform: scale(1.5);
+            accent-color: var(--accent);
+        }
+
+        .option-text {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            display: none;
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #f1f5f9;
+        }
+
+        /* Results Logic Styles */
+        #results-view {
+            display: none;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .result-header {
+            text-align: center;
+            padding: 40px;
+            background: #f8fafc;
+            border-radius: var(--radius);
+            margin-bottom: 40px;
+        }
+
+        .score-circle {
+            width: 160px;
+            height: 160px;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 30px;
+            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.3);
+        }
+
+        .score-number {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .score-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .profile-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+
+        .profile-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        .insight-box {
+            background: #fff;
+            border-left: 4px solid var(--accent);
+            padding: 24px;
+            margin-bottom: 16px;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .insight-box h4 {
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .chart-section {
+            background: var(--dark-bg);
+            padding: 30px;
+            border-radius: var(--radius);
+            margin: 40px 0;
+            color: #fff;
+        }
+
+        .chart-title {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Form Email Input */
+        #user-email {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+
+        #user-email:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .scorecard-page {
+                padding-top: 100px;
+            }
+
+            .scroll-area {
+                padding: 24px;
+            }
+
+            .widget-header {
+                padding: 30px 20px;
+            }
+
+            .widget-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .pillar-title {
+                font-size: 1.6rem;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .score-circle {
+                width: 120px;
+                height: 120px;
+            }
+
+            .score-number {
+                font-size: 3rem;
+            }
+
+            .profile-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========== NAVIGATION ========== -->
+    <nav class="nav" id="main-nav">
+        <div class="nav__inner">
+            <a href="index.html" class="nav__logo">
+                <img src="assets/logo.png" alt="Keystone English Logo">
+                <div class="nav__logo-text">
+                    Keystone English
+                    <span>Core Skills for Global Success</span>
+                </div>
+            </a>
+            <ul class="nav__links" id="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="scorecard.html" class="active">Executive Scorecard</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="scorecard.html" class="btn btn--primary btn--sm">Free Assessment →</a></li>
+            </ul>
+            <button class="nav__hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <!-- ========== MAIN SURVEY AREA ========== -->
+    <div class="scorecard-page">
+        <div class="container">
+
+            <div id="ranger-widget">
+                <!-- HEADER -->
+                <div class="widget-header">
+                    <h1>The Executive Presence Scorecard</h1>
+                    <p>Your Authority Blueprint</p>
+                </div>
+
+                <!-- PROGRESS BAR -->
+                <div class="progress-container">
+                    <div id="progress-bar" class="progress-bar"></div>
+                </div>
+
+                <!-- SCROLL CONTAINER -->
+                <div class="scroll-area" id="scroll-container">
+
+                    <!-- SURVEY VIEW -->
+                    <div id="survey-view">
+                        <div id="intro-text" style="text-align:center; max-width:700px; margin:0 auto 40px;">
+                            <p style="font-size:1.1rem; color:var(--text-light);">
+                                Are you being heard, or just being listened to? This 20-question scorecard performs a
+                                "Structural Audit" of your professional communication. Identify the cracks in your
+                                authority and
+                                discover the blueprint for command.
+                            </p>
+                            <br>
+                            <p style="font-size:0.95rem; color:var(--text-muted);">Approx. time: 3 minutes</p>
+                        </div>
+
+                        <!-- DYNAMIC STEP CONTAINER -->
+                        <form id="survey-form">
+                            <div id="step-container"></div>
+
+                            <div class="nav-buttons">
+                                <button type="button" id="back-btn" class="btn btn--outline-dark"
+                                    style="display:none;">Back</button>
+                                <button type="button" id="next-btn" class="btn btn--accent">Next Pillar</button>
+                                <button type="submit" id="submit-btn" class="btn btn--accent"
+                                    style="display:none;">Calculate Score</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- RESULTS VIEW -->
+                    <div id="results-view">
+                        <div id="dynamic-result"></div>
+
+                        <!-- Chart Section -->
+                        <div class="chart-section" id="chart-container">
+                            <h3 class="chart-title">Pillars of Presence: Current vs. Target</h3>
+                            <div style="max-width:600px; margin:0 auto;">
+                                <canvas id="scoreChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- CTA Area -->
+                        <div class="action-area" style="text-align:center; max-width:400px; margin:40px auto 0;">
+                            <h3 style="margin-bottom:16px;">Get Your Full Blueprint</h3>
+                            <p style="margin-bottom:24px; font-size:0.95rem;">Enter your email to receive your detailed
+                                PDF report and unlock your personalized growth plan.</p>
+                            <div id="cta-container">
+                                <!-- Injected by JS -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__grid">
+                <div>
+                    <div class="footer__brand">
+                        <img src="assets/logo.png" alt="Keystone English">
+                        <span class="footer__brand-name">Keystone English</span>
+                    </div>
+                    <p class="footer__desc">Empowering advanced ESL professionals to prioritize communication and
+                        fluency form.</p>
+                </div>
+                <div>
+                    <h5 class="footer__heading">Navigate</h5>
+                    <ul class="footer__links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="scorecard.html">Executive Scorecard</a></li>
+                        <li><a href="resources.html">Resources</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="footer__heading">Connect</h5>
+                    <ul class="footer__links">
+                        <li><a href="mailto:info@keystoneenglish.com.au">info@keystoneenglish.com.au</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <span>© 2026 Keystone English. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // --- DATA ---
+        const questions = [
+            // PILLAR 1
+            { dim: "Structural Authority", text: "When you are interrupted in a meeting, how do you usually react?", options: [{ text: "I wait for them to finish and hope for another chance to speak.", score: 1 }, { text: 'I say, "Sorry, can I just finish my point?"', score: 2 }, { text: 'I use a verbal bridge: "Hold that thought, I’ll get to that in a second," and keep going.', score: 3 }] },
+            { dim: "Structural Authority", text: "How do you start your status updates or presentations?", options: [{ text: '"I’m here today to talk about..."', score: 1 }, { text: '"I’d like to give you some updates on..."', score: 2 }, { text: '"The bottom line is [x]; here is how we’re achieving it."', score: 3 }] },
+            { dim: "Structural Authority", text: "In a large group call (10+ people), when do you usually speak up?", options: [{ text: "Only when I’m called upon or when someone asks for my data.", score: 1 }, { text: "Toward the end, once I’ve gathered my thoughts perfectly.", score: 2 }, { text: "In the first 10 minutes, with a framing question or observation.", score: 3 }] },
+            { dim: "Structural Authority", text: "When a senior leader disagrees with you publicly, your first move is:", options: [{ text: "To explain the technical details again to show why I'm right.", score: 1 }, { text: "To agree with them quickly to avoid conflict.", score: 2 }, { text: 'To lean into the challenge: "That’s a fair point. What specifically about this part concerns you?"', score: 3 }] },
+            { dim: "Strategic Silence", text: "How do you handle silence during a negotiation or a pitch?", options: [{ text: "I try to fill it immediately—silence makes me nervous.", score: 1 }, { text: "I use it to think of the next right word to say.", score: 2 }, { text: "I use it strategically; I let my point land and wait for them to respond first.", score: 3 }] },
+            { dim: "Strategic Silence", text: "If a meeting is going off-track, what do you do?", options: [{ text: "I wait for the boss or the host to fix it.", score: 1 }, { text: "I wait for a quiet moment and ask a question about the original topic.", score: 2 }, { text: 'I jump in: "In the interest of time, let\'s bring the focus back to our main objective."', score: 3 }] },
+            { dim: "Strategic Silence", text: "When you are asked a question you don't know the answer to, you:", options: [{ text: "Apologize for not having the information ready.", score: 1 }, { text: "Try to guess the answer so I don’t look unprepared.", score: 2 }, { text: 'Frame it as a scope choice: "That’s outside the current scope of this audit, but I’ll have that data for you by Friday."', score: 3 }] },
+
+            // PILLAR 2
+            { dim: "Influence Framework", text: "When explaining a complex technical problem to a non-technical VP, you:", options: [{ text: "Go through the step-by-step process of what went wrong.", score: 1 }, { text: 'Simplify the words so they understand the basic "what."', score: 2 }, { text: "Use an analogy and focus entirely on the business impact or risk.", score: 3 }] },
+            { dim: "Influence Framework", text: "How often do you use \"hedging\" language (like \"I think,\" \"maybe,\" \"just,\" or \"perhaps\")?", options: [{ text: "Often; it feels more polite and less aggressive.", score: 1 }, { text: "Only when I’m worried about my vocabulary.", score: 2 }, { text: 'Rarely; I replace "I think" with "My assessment is..."', score: 3 }] },
+            { dim: "Influence Framework", text: "Your manager pushes back on your suggestion. Your immediate reaction is:", options: [{ text: "To repeat yourself, thinking they didn't understand your English.", score: 1 }, { text: "To show more charts and data to prove your point.", score: 2 }, { text: 'To ask a pivot question: "What part of this strategy feels like the biggest risk to you?"', score: 3 }] },
+            { dim: "Narrative Design", text: "When presenting, your slides are usually:", options: [{ text: "Detailed charts with all the raw data for transparency.", score: 1 }, { text: "Bullet points explaining the main things we found.", score: 2 }, { text: 'One "Insight Headline" with a visual that supports a specific decision.', score: 3 }] },
+            { dim: "Narrative Design", text: "How do you end a meeting or update?", options: [{ text: '"Does anyone have any questions?"', score: 1 }, { text: '"I hope this was helpful for everyone."', score: 2 }, { text: '"Based on this, I need a \'Yes\' or \'No\' on this project by Friday."', score: 3 }] },
+            { dim: "Narrative Design", text: "When you talk about \"Risk,\" how do you describe it?", options: [{ text: "As a potential problem that might happen later.", score: 1 }, { text: "As a technical challenge for the team to solve.", score: 2 }, { text: 'As a trade-off: "If we don\'t do [y], we risk losing [x] in the next quarter."', score: 3 }] },
+
+            // PILLAR 3
+            { dim: "Presence Blueprint", text: "When you make a small grammar mistake in a meeting, what happens?", options: [{ text: "I get embarrassed, apologize, and lose my focus.", score: 1 }, { text: "I quickly correct myself and try to keep going.", score: 2 }, { text: "I ignore it; the message is more important than the mechanics.", score: 3 }] },
+            { dim: "Executive Parity", text: "How do you handle small talk with native-speaking leaders?", options: [{ text: "I stay quiet or stick to \"How are you?\"", score: 1 }, { text: "I talk about safe topics like the weather or the weekend.", score: 2 }, { text: "I use common ground (like industry trends or sports) to build a real connection.", score: 3 }] },
+            { dim: "Executive Parity", text: "In emails to senior leadership, your tone is usually:", options: [{ text: "Very formal and long (the \"academic\" style).", score: 1 }, { text: "Polite, helpful, and informative.", score: 2 }, { text: "Short, direct, and action-oriented.", score: 3 }] },
+            { dim: "Presence Blueprint", text: "Do you have a \"signature style\"—a specific way people know you communicate?", options: [{ text: "No, I just try to be accurate and clear.", score: 1 }, { text: "A little bit, but it depends on how confident I feel that day.", score: 2 }, { text: "Yes; I have a few specific \"go-to\" ways to start and end my interactions.", score: 3 }] },
+            { dim: "Executive Parity", text: "When asking for feedback from your boss, you ask:", options: [{ text: '"Was my English okay during the call?"', score: 1 }, { text: '"What did you think of the presentation?"', score: 2 }, { text: '"How close are we to making a decision after that discussion?"', score: 3 }] },
+            { dim: "Executive Parity", text: "If someone asks you to do a task you don't have time for, you say:", options: [{ text: '"Yes, I will try to find time for it."', score: 1 }, { text: '"I\'m a bit busy, but I\'ll try to get to it later."', score: 2 }, { text: '"That\'s not a priority for me right now. Let\'s revisit this if our goals change."', score: 3 }] },
+            { dim: "Presence Blueprint", text: "How do you feel about your accent during important calls?", options: [{ text: "It’s a barrier that makes me sound less capable.", score: 1 }, { text: "It’s something I still need to work on with more lessons.", score: 2 }, { text: "It’s just part of who I am; my value is in my strategy and ideas.", score: 3 }] },
+        ];
+
+        const steps = [
+            { title: "Pillar 1: Structural Authority", start: 0, end: 7 },
+            { title: "Pillar 2: The Influence Framework", start: 7, end: 13 },
+            { title: "Pillar 3: The Presence Blueprint", start: 13, end: 20 }
+        ];
+
+        const profiles = {
+            foundation: {
+                title: "The Technical Expert",
+                level: "The Foundation Level (20-35)",
+                situation: "You are the person who \"gets things done,\" but you are currently stuck in the foundation of the organization.",
+                shift: "Transition from \"How\" to \"Bottom Line.\"",
+                goal: "Master the \"60-Second Lead\".",
+            },
+            growth: {
+                title: "The Rising Architect",
+                level: "The Growth Level (36-48)",
+                situation: "You are on the verge of senior leadership, but your communication structure is being weakened by \"politeness.\"",
+                shift: "Transition from \"Polite\" to \"Powerful.\"",
+                goal: "Practice the \"Interruption Bridge\".",
+            },
+            keystone: {
+                title: "The Boardroom Strategist",
+                level: "The Keystone Level (49-60)",
+                situation: "You are already operating at a high level. Your challenge is the \"Last 1%\"—psychological framing.",
+                shift: "Master \"Strategic Questioning.\"",
+                goal: "Redefine the structure of the room.",
+            }
+        };
+
+        // --- LOGIC ---
+        let currentStepIndex = 0;
+        const userAnswers = {};
+
+        const stepContainer = document.getElementById('step-container');
+        const scrollContainer = document.getElementById('scroll-container');
+        const introText = document.getElementById('intro-text');
+        const nextBtn = document.getElementById('next-btn');
+        const backBtn = document.getElementById('back-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const surveyView = document.getElementById('survey-view');
+        const resultsView = document.getElementById('results-view');
+        const dynamicResultObj = document.getElementById('dynamic-result');
+        const ctaContainer = document.getElementById('cta-container');
+
+        function renderStep(index) {
+            const step = steps[index];
+            stepContainer.innerHTML = '';
+
+            const progress = ((index + 1) / steps.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            const header = document.createElement('div');
+            header.className = 'pillar-header';
+            header.innerHTML = `
+                <span class="pillar-label">PART ${index + 1} OF 3</span>
+                <h3 class="pillar-title">${step.title}</h3>
+            `;
+            stepContainer.appendChild(header);
+
+            for (let i = step.start; i < step.end && i < questions.length; i++) {
+                const q = questions[i];
+                const qBlock = document.createElement('div');
+                qBlock.className = 'question-block';
+
+                const qTitle = document.createElement('div');
+                qTitle.className = 'question-text';
+                qTitle.innerText = `${i + 1}. ${q.text}`;
+
+                const optionsGroup = document.createElement('div');
+                optionsGroup.className = 'options-group';
+
+                q.options.forEach((opt) => {
+                    const label = document.createElement('label');
+                    label.className = 'option-label';
+
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = `q${i}`;
+                    radio.value = opt.score;
+                    if (userAnswers[`q${i}`] == opt.score) {
+                        radio.checked = true;
+                    }
+                    radio.addEventListener('change', () => {
+                        userAnswers[`q${i}`] = opt.score;
+                        const err = qBlock.querySelector('.error-msg');
+                        if (err) err.style.display = 'none';
+                    });
+                    const span = document.createElement('span');
+                    span.className = 'option-text';
+                    span.innerText = opt.text;
+                    label.appendChild(radio);
+                    label.appendChild(span);
+                    optionsGroup.appendChild(label);
+                });
+
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-msg';
+                errorDiv.innerText = "Please select an answer.";
+                qBlock.appendChild(errorDiv);
+
+                qBlock.appendChild(qTitle);
+                qBlock.appendChild(optionsGroup);
+                stepContainer.appendChild(qBlock);
+            }
+
+            // Buttons visibility
+            if (index === 0) {
+                backBtn.style.display = 'none';
+                introText.style.display = 'block';
+            } else {
+                backBtn.style.display = 'inline-flex';
+                introText.style.display = 'none';
+            }
+
+            if (index === steps.length - 1) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'inline-flex';
+            } else {
+                nextBtn.style.display = 'inline-flex';
+                submitBtn.style.display = 'none';
+            }
+
+            // Scroll to top of form
+            stepContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function validateCurrentStep() {
+            const step = steps[currentStepIndex];
+            let isValid = true;
+            let firstUnanswered = null;
+            for (let i = step.start; i < step.end; i++) {
+                if (!userAnswers[`q${i}`]) {
+                    isValid = false;
+                    const inputs = document.getElementsByName(`q${i}`);
+                    if (inputs.length > 0) {
+                        const block = inputs[0].closest('.question-block');
+                        const err = block.querySelector('.error-msg');
+                        if (err) err.style.display = 'block';
+                        if (!firstUnanswered) firstUnanswered = block;
+                    }
+                }
+            }
+            if (!isValid && firstUnanswered) {
+                firstUnanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return isValid;
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (validateCurrentStep()) {
+                currentStepIndex++;
+                renderStep(currentStepIndex);
+            }
+        });
+
+        backBtn.addEventListener('click', () => {
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                renderStep(currentStepIndex);
+            }
+        });
+
+        submitBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (validateCurrentStep()) {
+                calculateAndShowResults();
+            }
+        });
+
+        function calculateAndShowResults() {
+            // 1. Calculate Score
+            let totalScore = 0;
+            Object.values(userAnswers).forEach(val => totalScore += parseInt(val));
+
+            const dims = {
+                "Structural Authority": { current: 0, max: 0 },
+                "Strategic Silence": { current: 0, max: 0 },
+                "Influence Framework": { current: 0, max: 0 },
+                "Narrative Design": { current: 0, max: 0 },
+                "Presence Blueprint": { current: 0, max: 0 },
+                "Executive Parity": { current: 0, max: 0 },
+            };
+
+            questions.forEach((q, idx) => {
+                const score = parseInt(userAnswers[`q${idx}`] || 0);
+                if (dims[q.dim]) {
+                    dims[q.dim].current += score;
+                    dims[q.dim].max += 3;
+                }
+            });
+
+            // 2. Determine Profile
+            let profileKey = 'foundation';
+            if (totalScore >= 49) profileKey = 'keystone';
+            else if (totalScore >= 36) profileKey = 'growth';
+            const profile = profiles[profileKey];
+
+            // 3. Render Results
+            const resultHTML = `
+                <div class="result-header">
+                    <div class="score-circle">
+                        <span class="score-number">${totalScore}</span>
+                        <span class="score-label">Score</span>
+                    </div>
+                    <h2 class="profile-title">${profile.title}</h2>
+                    <div class="profile-subtitle">${profile.level}</div>
+                    <div style="margin-top:20px; font-weight:500; color:var(--text-light)">
+                        ${profile.situation}
+                    </div>
+                </div>
+                
+                <div class="profile-body">
+                    <div class="insight-box">
+                        <h4>The Shift</h4>
+                        <p>${profile.shift}</p>
+                    </div>
+                    <div class="insight-box" style="border-left-color: var(--secondary);">
+                        <h4>The Goal</h4>
+                        <p>${profile.goal}</p>
+                    </div>
+                </div>
+            `;
+            dynamicResultObj.innerHTML = resultHTML;
+
+            // 4. Render Email Button with Redirect Logic
+            ctaContainer.innerHTML = `
+                <input type="email" id="user-email" placeholder="Enter your email address" required>
+                <button type="button" id="webhook-btn" class="btn btn--primary" style="width: 100%;">Email Me My Full Plan →</button>
+            `;
+
+            const webhookUrl = "https://hook.eu1.make.com/3ik0sal4dbulbufm3z2hgjtvv6u0a3uj";
+
+            document.getElementById('webhook-btn').onclick = function () {
+                const emailInput = document.getElementById('user-email');
+                const email = emailInput.value.trim();
+                const btn = this;
+
+                if (!email || !email.includes('@')) {
+                    alert("Please enter a valid email address.");
+                    return;
+                }
+
+                const originalText = btn.innerText;
+                btn.innerText = "Sending...";
+                btn.disabled = true;
+
+                const payload = {
+                    email: email,
+                    total_score: totalScore,
+                    profile_key: profileKey,
+                    profile_title: profile.title,
+                    scores: {
+                        structural_authority: dims["Structural Authority"].current,
+                        strategic_silence: dims["Strategic Silence"].current,
+                        influence_framework: dims["Influence Framework"].current,
+                        narrative_design: dims["Narrative Design"].current,
+                        presence_blueprint: dims["Presence Blueprint"].current,
+                        executive_parity: dims["Executive Parity"].current
+                    },
+                    timestamp: new Date().toISOString()
+                };
+
+                fetch(webhookUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                })
+                    .then(() => {
+                        // Redirect to Resources page with profile param
+                        window.location.href = `resources.html?profile=${profileKey}`;
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert("Network Error. Please try again.");
+                        btn.disabled = false;
+                        btn.innerText = originalText;
+                    });
+            };
+
+            // 5. Render Chart
+            const labels = Object.keys(dims);
+            const userValues = labels.map(k => (dims[k].current / dims[k].max) * 100);
+            const targetValues = [100, 100, 100, 100, 100, 100];
+
+            const ctx = document.getElementById('scoreChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Current Score',
+                        data: userValues,
+                        backgroundColor: 'rgba(33, 150, 243, 0.4)',
+                        borderColor: 'rgba(33, 150, 243, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(33, 150, 243, 1)'
+                    }, {
+                        label: 'Target (Keystone)',
+                        data: targetValues,
+                        backgroundColor: 'rgba(255, 255, 255, 0)',
+                        borderColor: 'rgba(255, 255, 255, 0.3)',
+                        borderWidth: 1,
+                        pointBackgroundColor: 'transparent',
+                        pointBorderColor: 'transparent'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            pointLabels: { color: 'white', font: { size: 10, family: 'Poppins' } },
+                            ticks: { display: false, padding: 10, backdropColor: 'transparent' },
+                            suggestedMin: 0, suggestedMax: 100
+                        }
+                    },
+                    plugins: { legend: { labels: { color: 'white', font: { family: 'Poppins' } } } }
+                }
+            });
+
+            // 6. Switch Views
+            surveyView.style.display = 'none';
+            progressBar.parentElement.style.display = 'none';
+            resultsView.style.display = 'block';
+            document.getElementById('ranger-widget').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        renderStep(currentStepIndex);
+    </script>
+</body>
+
+</html>

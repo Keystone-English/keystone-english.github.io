@@ -335,22 +335,27 @@
 <body>
 
     <!-- ========== NAVIGATION ========== -->
-    <nav class="nav" id="main-nav">
-        <div class="nav__inner">
-            <a href="index.html" class="nav__logo">
+    <nav class="navbar" id="main-nav">
+        <div class="container navbar__inner">
+            <a href="index.html" class="navbar__logo">
                 <img src="assets/logo.png" alt="Keystone English Logo">
-                <div class="nav__logo-text">
-                    Keystone English
+                <div class="navbar__logo-text">
+                    KEYSTONE English
                     <span>Core Skills for Global Success</span>
                 </div>
             </a>
-            <ul class="nav__links" id="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="scorecard.html" class="active">Executive Scorecard</a></li>
-                <li><a href="resources.html">Resources</a></li>
-                <li><a href="scorecard.html" class="btn btn--primary btn--sm">Free Assessment →</a></li>
-            </ul>
-            <button class="nav__hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+
+            <div class="navbar__links" id="nav-links">
+                <a href="index.html">Home</a>
+                <a href="scorecard.html" class="active">Executive Scorecard</a>
+                <a href="#" class="btn btn--gold btn--sm" onclick="openWaitlistModal(''); return false;">Wait List</a>
+            </div>
+
+            <button class="navbar__hamburger" id="hamburger" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
@@ -447,7 +452,6 @@
                     <ul class="footer__links">
                         <li><a href="index.html">Home</a></li>
                         <li><a href="scorecard.html">Executive Scorecard</a></li>
-                        <li><a href="resources.html">Resources</a></li>
                     </ul>
                 </div>
                 <div>
@@ -458,13 +462,133 @@
                 </div>
             </div>
             <div class="footer__bottom">
-                <span>© 2026 Keystone English. All rights reserved.</span>
+                <span>© 2026 Keystone English. All rights reserved. | <a href="terms.html"
+                        style="color: inherit; text-decoration: underline;">Terms & Privacy</a></span>
             </div>
         </div>
     </footer>
 
+    <!-- ========== WAIT LIST MODAL ========== -->
+    <div id="waitlist-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeWaitlistModal()">&times;</span>
+            <h2 class="section-heading" style="margin-bottom: 10px;">Join the Wait List</h2>
+            <p style="text-align: center; margin-bottom: 25px; color: #475569; font-size: 0.95rem;">
+                Join today for early access to upcoming products and new slots. No commitment required.
+            </p>
+            <form class="contact__form" id="waitlist-form">
+                <div class="form-group">
+                    <label for="wl-name">Name</label>
+                    <input type="text" id="wl-name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="wl-email">E-mail address</label>
+                    <input type="email" id="wl-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="wl-reason">Interested in...</label>
+                    <select id="wl-reason" name="reason" required onchange="toggleWLReason()">
+                        <option value="">Select an option...</option>
+                        <option value="4 week intensive">4 week intensive</option>
+                        <option value="6 week intensive">6 week intensive</option>
+                        <option value="12 week casual">12 week casual</option>
+                        <option value="Future promotions">Future promotions</option>
+                        <option value="Online course only">Online course only</option>
+                        <option value="Group lessons">Group lessons</option>
+                        <option value="Other">Other (Please specify)</option>
+                    </select>
+                </div>
+                <div class="form-group" id="wl-other-wrap" style="display: none;">
+                    <label for="wl-other">Specific Reason</label>
+                    <input type="text" id="wl-other" name="other">
+                </div>
+                <button type="submit" class="btn btn--gold btn--lg"
+                    style="width:100%; margin-bottom: 15px;">Submit</button>
+                <p style="font-size: 0.75rem; color: #94a3b8; text-align: center; line-height: 1.4; margin: 0;">
+                    By clicking submit, you agree to our <a href="terms.html#terms" target="_blank"
+                        style="color: #64748b; text-decoration: underline;">T&Cs</a> and <a href="terms.html#privacy"
+                        target="_blank" style="color: #64748b; text-decoration: underline;">Privacy Policy</a>. New
+                    places are filled on a first-come, first-served basis from the wait list.
+                </p>
+            </form>
+        </div>
+    </div>
+
     <script src="js/main.js"></script>
     <script>
+        // Modal logic
+        const waitlistModal = document.getElementById('waitlist-modal');
+        const waitlistReason = document.getElementById('wl-reason');
+        const waitlistOtherWrap = document.getElementById('wl-other-wrap');
+        const waitlistOther = document.getElementById('wl-other');
+
+        function toggleWLReason() {
+            if (waitlistReason.value === 'Other') {
+                waitlistOtherWrap.style.display = 'block';
+                waitlistOther.setAttribute('required', 'true');
+            } else {
+                waitlistOtherWrap.style.display = 'none';
+                waitlistOther.removeAttribute('required');
+            }
+        }
+
+        function openWaitlistModal(reason) {
+            if (reason) {
+                let options = Array.from(waitlistReason.options).map(opt => opt.value);
+                if (options.includes(reason)) {
+                    waitlistReason.value = reason;
+                } else {
+                    waitlistReason.value = 'Other';
+                    waitlistOther.value = reason;
+                }
+                toggleWLReason();
+            }
+            waitlistModal.style.display = 'block';
+        }
+
+        function closeWaitlistModal() {
+            waitlistModal.style.display = 'none';
+        }
+
+        window.onclick = function (event) {
+            if (event.target == waitlistModal) {
+                closeWaitlistModal();
+            }
+        }
+
+        document.getElementById('waitlist-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = 'Submitting...';
+            submitBtn.disabled = true;
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            fetch('https://hook.eu1.make.com/kkrqp5hvw5tn18p3xby4mgd3ekr1au1r', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+                .then(response => {
+                    alert('Thank you for joining the wait list!');
+                    e.target.reset();
+                    closeWaitlistModal();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('There was an error joining the wait list. Please try again later.');
+                })
+                .finally(() => {
+                    submitBtn.innerText = originalText;
+                    submitBtn.disabled = false;
+                });
+        });
+
         // --- DATA ---
         const questions = [
             // PILLAR 1
@@ -619,7 +743,9 @@
             }
 
             // Scroll to top of form
-            stepContainer.scrollIntoView({ behavior: 'smooth' });
+            if (index > 0) {
+                stepContainer.scrollIntoView({ behavior: 'smooth' });
+            }
         }
 
         function validateCurrentStep() {
@@ -722,16 +848,24 @@
 
             // 4. Render Email Button with Redirect Logic
             ctaContainer.innerHTML = `
-                <input type="email" id="user-email" placeholder="Enter your email address" required>
+                <input type="text" id="user-name" placeholder="Enter your full name" required style="width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 1rem; margin-bottom: 12px; box-sizing: border-box;">
+                <input type="email" id="user-email" placeholder="Enter your email address" required style="width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 1rem; margin-bottom: 12px; box-sizing: border-box;">
                 <button type="button" id="webhook-btn" class="btn btn--primary" style="width: 100%;">Email Me My Full Plan →</button>
             `;
 
-            const webhookUrl = "https://hook.eu1.make.com/3ik0sal4dbulbufm3z2hgjtvv6u0a3uj";
+            const webhookUrl = "https://hook.eu1.make.com/3ik0sal4dbulbufm3z2hgjtvv6u0a3uj"; // You can change this URL in the future if you generate a new specific webhook for this flow.
 
             document.getElementById('webhook-btn').onclick = function () {
+                const nameInput = document.getElementById('user-name');
                 const emailInput = document.getElementById('user-email');
+                const name = nameInput.value.trim();
                 const email = emailInput.value.trim();
                 const btn = this;
+
+                if (!name) {
+                    alert("Please enter your name.");
+                    return;
+                }
 
                 if (!email || !email.includes('@')) {
                     alert("Please enter a valid email address.");
@@ -739,10 +873,11 @@
                 }
 
                 const originalText = btn.innerText;
-                btn.innerText = "Sending...";
+                btn.innerText = "Generating Plan...";
                 btn.disabled = true;
 
                 const payload = {
+                    name: name,
                     email: email,
                     total_score: totalScore,
                     profile_key: profileKey,
@@ -765,8 +900,10 @@
                     body: JSON.stringify(payload)
                 })
                     .then(() => {
-                        // Redirect to Resources page with profile param
-                        window.location.href = `resources.html?profile=${profileKey}`;
+                        btn.innerText = "Check your inbox!";
+                        setTimeout(() => {
+                            window.location.href = `index.html`;
+                        }, 2000);
                     })
                     .catch(err => {
                         console.error(err);

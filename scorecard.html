@@ -848,7 +848,10 @@
 
             // 4. Render "Send me my personalised copy" form
             ctaContainer.innerHTML = `
-                <input type="text" id="user-name" placeholder="Enter your full name" required style="width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 1rem; margin-bottom: 12px; box-sizing: border-box;">
+                <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                    <input type="text" id="user-given-name" placeholder="Given name" required style="flex: 1; padding: 16px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 1rem; box-sizing: border-box;">
+                    <input type="text" id="user-family-name" placeholder="Family name" required style="flex: 1; padding: 16px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 1rem; box-sizing: border-box;">
+                </div>
                 <input type="email" id="user-email" placeholder="Enter your email address" required style="width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 1rem; margin-bottom: 12px; box-sizing: border-box;">
                 <button type="button" id="webhook-btn" class="btn btn--primary" style="width: 100%;">Send Me My Personalised Copy →</button>
             `;
@@ -856,15 +859,23 @@
             const webhookUrl = "https://hook.eu1.make.com/ag76smvq3i74gjpny0cyewoq4micv81k";
 
             document.getElementById('webhook-btn').onclick = function () {
-                const nameInput = document.getElementById('user-name');
+                const givenNameInput = document.getElementById('user-given-name');
+                const familyNameInput = document.getElementById('user-family-name');
                 const emailInput = document.getElementById('user-email');
-                const name = nameInput.value.trim();
+                const givenName = givenNameInput.value.trim();
+                const familyName = familyNameInput.value.trim();
                 const email = emailInput.value.trim();
                 const btn = this;
 
-                if (!name) {
-                    nameInput.style.borderColor = '#ef4444';
-                    nameInput.focus();
+                if (!givenName) {
+                    givenNameInput.style.borderColor = '#ef4444';
+                    givenNameInput.focus();
+                    return;
+                }
+
+                if (!familyName) {
+                    familyNameInput.style.borderColor = '#ef4444';
+                    familyNameInput.focus();
                     return;
                 }
 
@@ -879,7 +890,9 @@
                 btn.disabled = true;
 
                 const payload = {
-                    name: name,
+                    given_name: givenName,
+                    family_name: familyName,
+                    name: givenName + ' ' + familyName,
                     email: email,
                     total_score: totalScore,
                     profile_key: profileKey,
@@ -918,7 +931,8 @@
                     .then(() => {
                         btn.innerText = "✓ Check your inbox!";
                         btn.style.background = '#22c55e';
-                        nameInput.disabled = true;
+                        givenNameInput.disabled = true;
+                        familyNameInput.disabled = true;
                         emailInput.disabled = true;
                     })
                     .catch(err => {

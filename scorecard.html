@@ -419,9 +419,9 @@
 
                         <!-- CTA Area -->
                         <div class="action-area" style="text-align:center; max-width:400px; margin:40px auto 0;">
-                            <h3 style="margin-bottom:16px;">Get Your Full Blueprint</h3>
-                            <p style="margin-bottom:24px; font-size:0.95rem;">Enter your email to receive your detailed
-                                PDF report and unlock your personalized growth plan.</p>
+                            <h3 style="margin-bottom:16px;">Send Me My Personalised Copy</h3>
+                            <p style="margin-bottom:24px; font-size:0.95rem;">Enter your name and email address below
+                                and we'll send your personalised Executive Presence report straight to your inbox.</p>
                             <div id="cta-container">
                                 <!-- Injected by JS -->
                             </div>
@@ -846,14 +846,14 @@
             `;
             dynamicResultObj.innerHTML = resultHTML;
 
-            // 4. Render Email Button with Redirect Logic
+            // 4. Render "Send me my personalised copy" form
             ctaContainer.innerHTML = `
                 <input type="text" id="user-name" placeholder="Enter your full name" required style="width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 1rem; margin-bottom: 12px; box-sizing: border-box;">
                 <input type="email" id="user-email" placeholder="Enter your email address" required style="width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 1rem; margin-bottom: 12px; box-sizing: border-box;">
-                <button type="button" id="webhook-btn" class="btn btn--primary" style="width: 100%;">Email Me My Full Plan →</button>
+                <button type="button" id="webhook-btn" class="btn btn--primary" style="width: 100%;">Send Me My Personalised Copy →</button>
             `;
 
-            const webhookUrl = "https://hook.eu1.make.com/3ik0sal4dbulbufm3z2hgjtvv6u0a3uj"; // You can change this URL in the future if you generate a new specific webhook for this flow.
+            const webhookUrl = "https://hook.eu1.make.com/ag76smvq3i74gjpny0cyewoq4micv81k";
 
             document.getElementById('webhook-btn').onclick = function () {
                 const nameInput = document.getElementById('user-name');
@@ -863,17 +863,19 @@
                 const btn = this;
 
                 if (!name) {
-                    alert("Please enter your name.");
+                    nameInput.style.borderColor = '#ef4444';
+                    nameInput.focus();
                     return;
                 }
 
                 if (!email || !email.includes('@')) {
-                    alert("Please enter a valid email address.");
+                    emailInput.style.borderColor = '#ef4444';
+                    emailInput.focus();
                     return;
                 }
 
                 const originalText = btn.innerText;
-                btn.innerText = "Generating Plan...";
+                btn.innerText = "Sending...";
                 btn.disabled = true;
 
                 const payload = {
@@ -882,6 +884,10 @@
                     total_score: totalScore,
                     profile_key: profileKey,
                     profile_title: profile.title,
+                    profile_level: profile.level,
+                    profile_situation: profile.situation,
+                    profile_shift: profile.shift,
+                    profile_goal: profile.goal,
                     scores: {
                         structural_authority: dims["Structural Authority"].current,
                         strategic_silence: dims["Strategic Silence"].current,
@@ -890,6 +896,16 @@
                         presence_blueprint: dims["Presence Blueprint"].current,
                         executive_parity: dims["Executive Parity"].current
                     },
+                    answers: Object.entries(userAnswers).reduce((acc, [key, val]) => {
+                        const idx = parseInt(key.replace('q', ''));
+                        acc[key] = {
+                            question: questions[idx].text,
+                            selected_option: questions[idx].options.find(o => o.score == val)?.text || '',
+                            score: val,
+                            dimension: questions[idx].dim
+                        };
+                        return acc;
+                    }, {}),
                     timestamp: new Date().toISOString()
                 };
 
@@ -900,10 +916,10 @@
                     body: JSON.stringify(payload)
                 })
                     .then(() => {
-                        btn.innerText = "Check your inbox!";
-                        setTimeout(() => {
-                            window.location.href = `index.html`;
-                        }, 2000);
+                        btn.innerText = "✓ Check your inbox!";
+                        btn.style.background = '#22c55e';
+                        nameInput.disabled = true;
+                        emailInput.disabled = true;
                     })
                     .catch(err => {
                         console.error(err);

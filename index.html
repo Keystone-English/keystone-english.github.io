@@ -474,6 +474,11 @@
             }
         });
 
+        // Auto-open waitlist modal if URL contains #waitlist
+        if (window.location.hash === '#waitlist') {
+            openWaitlistModal('');
+        }
+
         // Contact form handler
         document.getElementById('contact-form').addEventListener('submit', (e) => {
             e.preventDefault();

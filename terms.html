@@ -185,8 +185,12 @@
             </p>
             <form class="contact__form" id="waitlist-form">
                 <div class="form-group">
-                    <label for="wl-name">Name</label>
-                    <input type="text" id="wl-name" name="name" required>
+                    <label for="wl-given-name">Given name</label>
+                    <input type="text" id="wl-given-name" name="given_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="wl-family-name">Family name</label>
+                    <input type="text" id="wl-family-name" name="family_name" required>
                 </div>
                 <div class="form-group">
                     <label for="wl-email">E-mail address</label>
@@ -249,7 +253,7 @@
             </div>
             <div class="footer__bottom" style="margin-top: 20px; text-align: center;">
                 <span>© 2026 Keystone English. All rights reserved. | <a href="terms.html"
-                        style="color: #cbd5e1; text-decoration: underline;">Terms & Privacy</a></span>
+                        style="color: #cbd5e1; text-decoration: underline;">Terms & Privacy</a> | v1.3</span>
             </div>
         </div>
     </footer>
@@ -304,8 +308,16 @@
             submitBtn.innerText = 'Submitting...';
             submitBtn.disabled = true;
 
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
+            const givenName = document.getElementById('wl-given-name').value.trim();
+            const familyName = document.getElementById('wl-family-name').value.trim();
+            const data = {
+                given_name: givenName,
+                family_name: familyName,
+                name: givenName + ' ' + familyName,
+                email: document.getElementById('wl-email').value.trim(),
+                reason: document.getElementById('wl-reason').value,
+                other: document.getElementById('wl-other').value.trim()
+            };
 
             fetch('https://hook.eu1.make.com/kkrqp5hvw5tn18p3xby4mgd3ekr1au1r', {
                 method: 'POST',
